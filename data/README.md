@@ -1,4 +1,3 @@
-# 数据可以自己收集英文翻译
 
 This document provides guidelines on how to collect your own data and translate it into English.
 
