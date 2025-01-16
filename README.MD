@@ -20,19 +20,6 @@ This project involves the development of an electronic control lock system using
 
 ## Installation
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/yourusername/esp32-project.git
-    ```
-2. Navigate to the project directory:
-    ```sh
-    cd esp32-project
-    ```
-3. Install the necessary dependencies:
-    ```sh
-    pip install -r requirements.txt
-    ```
-
 ## Usage
 
 1. Connect the ESP32 to your computer.
@@ -44,9 +31,6 @@ This project involves the development of an electronic control lock system using
 
 Contributions are welcome! Please fork the repository and submit a pull request.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
