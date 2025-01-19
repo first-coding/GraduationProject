@@ -1,22 +1,23 @@
 #include "esp_camera.h"
 #include <WiFi.h>
-//与其说这里是选择摄像头模式，不如说是根据开发板的不同引脚不同选择模式
 #define CAMERA_MODEL_ESP32S3_EYE
 #include "camera_pins.h"
 #include <WiFiClient.h>
+
 // WiFi的SSID和密码
 const char* ssid = "TP-LINK_6BE3";     // 输入你的WiFi名称
 const char* passwd = "29826519.com";   // 输入你的WiFi密码
-const char* serverIP = "192.168.2.103"; // 目标服务器IP地址
-const uint16_t serverPort = 8080; // 目标服务器端口
+const char* serverIP = "192.168.2.100"; // 目标服务器IP地址
+const uint16_t serverPort = 8080;       // 目标服务器端口
 WiFiClient client;
 
 void setup() {
   // 启动串口通信
   Serial.begin(9600);
-
+  WiFi.mode(WIFI_STA);
+  WiFi.setSleep(false); //关闭STA模式下wifi休眠，提高响应速度
   // WiFi模块初始化
-  Serial.println("conneting WiFi...");
+  Serial.println("Connecting WiFi...");
   
   // 连接WiFi
   WiFi.begin(ssid, passwd);
@@ -33,7 +34,7 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());  // 打印ESP32的IP地址
 
-  //配置摄像头
+  // 配置摄像头
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
@@ -56,7 +57,7 @@ void setup() {
   config.pin_reset = RESET_GPIO_NUM;
 
   config.xclk_freq_hz = 20000000;
-  config.frame_size = FRAMESIZE_UXGA;
+  config.frame_size = FRAMESIZE_QQVGA;
   config.pixel_format = PIXFORMAT_JPEG;  // for streaming
   config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
   config.fb_location = CAMERA_FB_IN_PSRAM;
@@ -75,25 +76,42 @@ void setup() {
 }
 
 void loop() {
-  // 循环中的代码
-  camera_fb_t *fb = esp_camera_fb_get();
-  if(!fb){
-    Serial.println("capture image error");
-    return ;
-  }
-  Serial.print("Capture frame size：");
-  Serial.println(fb->len);
-  // 尝试连接到服务器
   if (client.connect(serverIP, serverPort)) {
-    // 发送图像数据
-    client.write(fb->buf, fb->len);
-    Serial.println("Image data sent");
+    // 获取摄像头数据
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (!fb) {
+      Serial.println("Capture image error");
+      return;
+    }
 
-    client.stop(); // 关闭连接
+    // 获取图像数据的大小
+    size_t image_size = fb->len;
+
+    // 发送图像的大小
+    Serial.println("Sending image size...");
+    Serial.println(image_size);
+    uint32_t network_image_size = htonl(image_size);  // 转换为大端字节序
+// 发送图像大小
+   client.write((uint8_t*)&network_image_size, sizeof(network_image_size));
+    // 发送图像数据
+    Serial.println("Sending image data...");
+    client.write(fb->buf, fb->len);  // 发送图像数据
+    Serial.println("Image data sent");
+    while (client.connected() || client.available()){
+    if (client.available()) //如果有数据可读取
+    {
+      String line = client.readStringUntil('\n'); //读取数据到换行符
+      Serial.print("读取到数据：");
+      Serial.println(line);
+    }
+    }
+
+    // 清理资源
+    esp_camera_fb_return(fb);
+    client.stop();  // 关闭连接
   } else {
     Serial.println("Connection failed");
   }
 
-  esp_camera_fb_return(fb);
   delay(1000);  // 每隔1秒拍照一次
 }
