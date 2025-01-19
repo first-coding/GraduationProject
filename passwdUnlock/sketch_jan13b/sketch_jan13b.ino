@@ -103,6 +103,12 @@ void loop() {
       String line = client.readStringUntil('\n'); //读取数据到换行符
       Serial.print("读取到数据：");
       Serial.println(line);
+      if (line=="success"){
+        pinMode(14,OUTPUT);
+        digitalWrite(14, HIGH);
+        delay(3000);
+        digitalWrite(14, LOW);
+      }
     }
     }
 
