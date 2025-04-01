@@ -2,7 +2,7 @@ import socket
 import time
 from io import BytesIO
 from PIL import Image
-from Facenets.script.infer import predict
+from model.Facenets.script.infer import predict
 
 server_ip = '0.0.0.0'  # 监听所有网络接口
 server_port = 8080      # 服务器监听端口
