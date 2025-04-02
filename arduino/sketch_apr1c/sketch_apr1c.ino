@@ -50,6 +50,11 @@ WiFiClient client;
 void setup() {
   Serial.begin(115200);  // 初始化串口
   Serial.println("System Ready.");
+  if (psramInit()) {
+        Serial.println("PSRAM Initialized Successfully!");
+    } else {
+        Serial.println("PSRAM Initialization Failed!");
+    }
 
   pinMode(outputPin, OUTPUT);  // 设置GPIO43为输出模式
   digitalWrite(outputPin, LOW);  // 初始状态为高电平
@@ -104,13 +109,13 @@ void setup() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
 
-  config.xclk_freq_hz = 20000000;
-  config.frame_size = FRAMESIZE_QQVGA;
+  config.xclk_freq_hz = 10000000;
+  config.fb_location = CAMERA_FB_IN_PSRAM;;
+  config.frame_size = FRAMESIZE_QVGA;  // 1600x1200 高分辨率
   config.pixel_format = PIXFORMAT_JPEG;  // for streaming
   config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
-  config.fb_location = CAMERA_FB_IN_PSRAM;
-  config.jpeg_quality = 15;
-  config.fb_count = 2;
+  config.jpeg_quality= 12;
+  config.fb_count =2;
 
   Serial.println("Initializing camera pins...");
   // 摄像头初始化

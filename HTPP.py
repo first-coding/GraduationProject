@@ -2,7 +2,7 @@ import socket
 import time
 from io import BytesIO
 from PIL import Image
-from model.Facenets.script.infer import predict
+from Facenets.script.infer import predict
 
 server_ip = '0.0.0.0'  # 监听所有网络接口
 server_port = 8080      # 服务器监听端口
@@ -49,6 +49,7 @@ while True:
             # 使用BytesIO将接收到的字节数据转换为PIL图像
             try:
                 image = Image.open(BytesIO(image_data)).convert('RGB')
+                image.show()
             except Exception as e:
                 print(f"图像解码失败: {e}")
                 continue
