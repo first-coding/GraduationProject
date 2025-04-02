@@ -42,7 +42,7 @@ byte allowedUID2[] = {0x41, 0x40, 0xAC, 0x7B};  // 允许的第二个UID
 
 // WiFi的SSID和密码
 const char* ssid     = "OPPO A55 5G";
-const char* password = "20011008";
+const char* passwd = "20011008";
 const char* serverIP = "192.168.214.210"; // 目标服务器IP地址
 const uint16_t serverPort = 8080;       // 目标服务器端口
 WiFiClient client;

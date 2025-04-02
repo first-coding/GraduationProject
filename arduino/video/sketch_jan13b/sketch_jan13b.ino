@@ -5,9 +5,9 @@
 #include <WiFiClient.h>
 
 // WiFi的SSID和密码
-const char* ssid = "TP-LINK_6BE3";     // 输入你的WiFi名称
-const char* passwd = "29826519.com";   // 输入你的WiFi密码
-const char* serverIP = "192.168.2.100"; // 目标服务器IP地址
+const char* ssid     = "OPPO A55 5G";
+const char* passwd = "20011008";
+const char* serverIP = "192.168.214.210"; // 目标服务器IP地址
 const uint16_t serverPort = 8080;       // 目标服务器端口
 WiFiClient client;
 
