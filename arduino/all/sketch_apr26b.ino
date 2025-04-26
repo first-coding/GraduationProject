@@ -49,6 +49,10 @@ byte allowedUID2[] = {0x41, 0x40, 0xAC, 0x7B};
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 void triggerOutput();  // 函数声明
+bool videoUnlockFlag = false;
+void  checkKeypad();
+void checkRFID();
+void videounlock();
 class MyCallbacks : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *pCharacteristic) {
     String value = pCharacteristic->getValue().c_str();
@@ -149,7 +153,9 @@ void setup() {
 void loop() {
   checkKeypad();
   checkRFID();
-  videounlock();
+  if (videoUnlockFlag) {
+    videounlock();
+  }
 }
 
 void videounlock() {
@@ -181,11 +187,13 @@ void videounlock() {
   } else {
     Serial.println("连接服务器失败");
   }
-  delay(1000);
+  // delay(1000);
+  // checkKeypad();
 }
 
 void checkKeypad() {
   char key = keypad.getKey();
+  Serial.println(key);  
   if (key) {
     Serial.print("Key pressed: ");
     Serial.println(key);
@@ -200,7 +208,11 @@ void checkKeypad() {
     } else if (key == 'D') {
       inputPassword = "";
       Serial.println("Input cleared.");
-    } else {
+    }else if (key == 'C'){
+      videoUnlockFlag = true;
+    } else if (key=='B'){
+      videoUnlockFlag=false;
+    }else {
       inputPassword += key;
     }
     Serial.print("Current input: ");

@@ -3,7 +3,8 @@ import time
 from io import BytesIO
 from PIL import Image
 from Facenets.script.infer import predict
-
+import cv2
+import numpy as np
 server_ip = '0.0.0.0'  # 监听所有网络接口
 server_port = 8080      # 服务器监听端口
 
@@ -49,7 +50,13 @@ while True:
             # 使用BytesIO将接收到的字节数据转换为PIL图像
             try:
                 image = Image.open(BytesIO(image_data)).convert('RGB')
-                image.show()
+                opencv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+
+                # 使用 OpenCV 显示并在2秒后关闭
+                cv2.imshow("Received Image", opencv_image)
+                cv2.waitKey(2000)  # 显示2秒（2000毫秒）
+                cv2.destroyAllWindows()
+                    
             except Exception as e:
                 print(f"图像解码失败: {e}")
                 continue
